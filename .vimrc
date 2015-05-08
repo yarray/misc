@@ -1,35 +1,43 @@
 set nocompatible
+
 set nobackup
-
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4
-set smarttab
-set expandtab
-set rnu
-
+" undo even after quitting
+set undofile
+" just use /tmp since there's no need to undo that much
+set undodir=/tmp/
 set encoding=utf-8
-set langmenu=en_US
-let $LANG='en_US'
-
-au BufCreate,BufRead,BufNew * :if ((&readonly==1)) || (&modifiable==0) | noremap <buffer> q :q<CR> | endif
-
+" columns to display tab 
+set tabstop=4
+" columns inserted when hitting tab
+set softtabstop=4
+" columns when indenting or >
+set shiftwidth=4
+" <tab> and <bs> with shiftwidth
+set smarttab
+" expand tab to spaces
+set expandtab
+" related row number to ease jumping
+set rnu
+" turn off modeline for security
 set modelines=0
 set showmode
+" show running command and other informations
 set showcmd
 set nocursorline
-set hlsearch
+" backspace can delete indent, eol, start (just like in other apps)
 set backspace=indent,eol,start
+" show rows and columns
 set ruler
+" filter as you type
 set incsearch
+set hlsearch
+" indent as the last line when no available rules
 set autoindent
+" bash-like command menu behavior
+set wildmenu
+set wildmode=list:longest,full
 
-nnoremap j gj
-nnoremap k gk
-
-command! -bar SudoWrite : setlocal nomodified | exe (has('gui_running') ? '' : 'silent') 'write !sudo tee % > /dev/null' | let &modified = v:shell_error
-
-" Bundle
+" Plugins
 " ==========
 
 filetype off
@@ -43,33 +51,46 @@ call vundle#rc()
 " let Vundle manage Vundle, required
 Bundle 'gmarik/Vundle.vim'
 
-Bundle 'plasticboy/vim-markdown'
-Bundle 'Valloric/YouCompleteMe'
+" General essentials
+" ------------------
+Bundle 'kien/ctrlp.vim'
+Bundle 'scrooloose/nerdtree'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'scrooloose/syntastic'
+Bundle 'Valloric/YouCompleteMe'
 Bundle 'SirVer/ultisnips'
 Bundle 'honza/vim-snippets'
 Bundle 'rking/ag.vim'
-Bundle 'kien/ctrlp.vim'
-Bundle 'scrooloose/nerdtree'
-Bundle 'chase/vim-ansible-yaml'
 Bundle 'majutsushi/tagbar'
-Bundle 'junegunn/goyo.vim'
-" Bundle 'junegunn/limelight.vim' " focus mode, not very practical
-Bundle 'mattn/emmet-vim'
-Bundle 'marijnh/tern_for_vim'
-Bundle 'c.vim'
-Bundle 'derekwyatt/vim-fswitch'
 Bundle 'xolox/vim-misc'
 Bundle 'xolox/vim-easytags'
-Bundle 'yonchu/accelerated-smooth-scroll'
-Bundle 'VOoM'
-" Bundle 'git://git.code.sf.net/p/vim-latex/vim-latex' " too big so many key conflict
-Bundle 'LaTeX-Box-Team/LaTeX-Box'
-" Bundle 'bling/vim-airline' " not useful for me
-" Bundle 'pangloss/vim-javascript'
-Bundle 'jelera/vim-javascript-syntax'
-Bundle 'JavaScript-Indent'
+
+" Web essentials
+" --------------
+"   Integrates with YCM and goto def and more
+Bundle 'marijnh/tern_for_vim'
+"   For no perfect js indent plugin, but it can do much more
+Bundle 'Chiel92/vim-autoformat'
+Bundle 'mattn/emmet-vim'
+
+" Python essentials
+" -----------------
+Bundle 'hynek/vim-python-pep8-indent'
+
+" Writing essentials
+" ------------------
+Bundle 'plasticboy/vim-markdown'
+Bundle 'lervag/vimtex'
+Bundle 'junegunn/goyo.vim'
+Bundle 'reedes/vim-pencil'
+Bundle 'reedes/vim-lexical'
+
+" Tools
+" -----
+Bundle 'junegunn/limelight.vim'
+Bundle 'pangloss/vim-javascript'
+Bundle 'derekwyatt/vim-fswitch'
+
 " new plugins here...
 
 " themes
@@ -78,86 +99,95 @@ Bundle 'altercation/vim-colors-solarized'
 "
 " bundles end
 
-" syntax
-Bundle 'applescript.vim'
-
-
-" writing
-func! WordProcessorMode() 
-  setlocal formatoptions=1 
-  setlocal noexpandtab 
-  map j gj
-  map k gk
-  " map <F3> :setlocal spell! spelllang=en_us<CR> " now use language_check
-  "set thesaurus+=/Users/yarray/.vim/thesaurus/mthesaur.txt
-  set complete+=s
-  set formatprg=par
-  setlocal wrap 
-  setlocal linebreak 
-  setlocal cursorline
-  if has("gui_running")
-    set guifont=Bitstream\ Vera\ Sans\ Mono:h15
-    set guifontwide=Hiragino\ Sans\ GB:h15
-    set lsp=5
-    colorscheme pencil
-  endif
-endfu 
-
-au FileType mkd,tex call WordProcessorMode()
-au FileType mkd set filetype=mkd.text
-
+" Plugin settings
 " ======================
-"
+
+" ctrlp
+" -----
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
+
+" NERDTree
+" --------
+nnoremap - :NERDTreeToggle<CR>
+
 " syntastic
+" ---------
 let g:syntastic_mode_map = { "mode": "active",
-                               \ "passive_filetypes": ["text"] }
-let g:syntastic_python_checkers = ["pylint", "pyflakes", "flake8"]
-let g:syntastic_text_checkers = ["language_check"]
+                               \ "passive_filetypes": ["text", "python"] }
+let g:syntastic_python_checkers = ["flake8"]
 let g:syntastic_javascript_checkers = ["jshint"]
-
-" let g:syntastic_text_checkers = ["atdtool"] " online slow
-map <F3> :SyntasticCheck<CR> " now use language_check
-
-" markdown
-let g:vim_markdown_initial_foldlevel=1
+map <F3> :SyntasticCheck<CR>
 
 " YCM
-let g:ycm_key_list_select_completion = ["<cr>", "<down>"]
-let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/cpp/ycm/.ycm_extra_conf.py'
+" ---
+let g:ycm_key_list_select_completion = ["<c-cr>", "<down>"]
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 set cmdheight=2  " avoid annoying error messages
 let g:ycm_confirm_extra_conf = 0
 
+au FileType cpp,c noremap <buffer> <C-S-]> :YcmCompleter GoTo<CR>
+
 " Ultisnips
+" ---------
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
-au FileType cpp,c noremap <buffer> <C-]> :YcmCompleter GoTo<CR>
-
-" Emmet
-"let g:user_emmet_leader_key='<C-,>'
-
-" NERDTree
-nnoremap - :NERDTreeToggle<CR>
-
 " tagbar
-noremap <F7> :Tagbar<CR>
+" ------
+noremap <leader>- :Tagbar<CR>
+let g:tagbar_type_r = {
+    \ 'ctagstype' : 'r',
+    \ 'kinds'     : [
+        \ 'f:Functions',
+        \ 'g:GlobalVariables',
+    \ ]
+\ }
 
-" applescript
-au BufCreate,BufRead,BufNew *.applescript set filetype=applescript
+" easytags
+" --------
+set tags=./tags
+let g:easytags_dynamic_files = 1
+let g:easytags_suppress_report = 1
+
+" tern
+" ----
+au Filetype javascript nnoremap <C-]> :TernDef<CR>
+
+" markdown
+" --------
+let g:vim_markdown_initial_foldlevel=1
+
+" vimtex
+" ------
+let g:tex_flavor = "latex"
+" too disturbing
+let g:vimtex_quickfix_ignore_all_warnings = 1
+
+" goyo
+" refer to .gvimrc to see distraction free mode
+" ----------------
+let g:goyo_rnu=1
+
+" pencil & lexical
+" ----------------
+augroup pencil
+  autocmd!
+  autocmd FileType markdown,mkd call pencil#init({'wrap': 'soft'})
+                            \ | call lexical#init()
+  autocmd FileType tex call pencil#init({'wrap': 'soft'})
+                            \ | call lexical#init()
+augroup END
 
 " fswitch
+" -------
 au BufEnter *.h let b:fswitchdst  = 'cpp,cc,C'
 
-" vim-latex
-" let g:Tex_DefaultTargetFormat='pdf'
-" let g:Tex_CompileRule_pdf = 'xelatex --aux-directory=/tmp/ --synctex=-1 -src-specials -interaction=nonstopmode $*'
 
-" VOoM
-let g:voom_tree_placement = "right"
-let g:voom_tree_width = 50
-au Filetype vim map <F7> VoOM
-au Filetype mkd map <F7> :VoomToggle markdown<CR>
-au Filetype tex map <F7> :VoomToggle latex<CR>
+" Handcrafted
+" ===========
+" write using sudo when the file is not opened with root priviledges
+command! -bar SudoWrite : setlocal nomodified | exe (has('gui_running') ? '' : 'silent') 'write !sudo tee % > /dev/null' | let &modified = v:shell_error
+
 
 syntax on
 filetype on
