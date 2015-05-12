@@ -1,6 +1,16 @@
-set guioptions-=m  "remove menu bar
-set guioptions-=T  "remove toolbar
-set guioptions-=r  "remove toolbar
+" remove distractions
+if has("gui_macvim")
+    set fullscreen
+else
+    set guioptions-=m  "remove menu bar
+    set guioptions-=T  "remove toolbar
+    set guioptions-=r  "remove toolbar
+endif
+
+" switch input method to us in normal mode
+set noimd
+set imi=2
+set ims=2
 
 " gvim display modes
 " ==================
@@ -9,24 +19,30 @@ set guioptions-=r  "remove toolbar
 
 " Normal
 " -------
-" set guifont=Input\ Mono\ Light\ 10
+" if has("gui_macvim")
+"     set guifont=InputMono\ ExLight:h12
+" else 
+"     set guifont=Input\ Mono\ Light\ 10
+" endif
 " colorscheme solarized
+" set background=dark
 
 " Writing
 " -------
-set guifont=CMU\ Typewriter\ Text\ Ultra-Light\ 16
-set linespace=11
+if has("gui_macvim")
+    set guifont=CMU\ Typewriter\ Text\ Light:h22
+    set linespace=5
+    let g:goyo_height='100%'
+else
+    set guifont=CMU\ Typewriter\ Text\ Ultra-Light\ 16
+    set linespace=11
+endif
 colorscheme pencil
 
 
 " goyo
 " ----
 function! s:goyo_enter()
-    " linux has no perfect full screen solution here,
-    " so we should manually maximize window manually first
-    if has("gui_macvim")
-        set fullscreen
-    endif
     Limelight
 endfunction
 

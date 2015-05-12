@@ -182,6 +182,11 @@ augroup END
 " -------
 au BufEnter *.h let b:fswitchdst  = 'cpp,cc,C'
 
+" Autoformat
+" ----------
+" The js indenters are so broken that I have to do this
+au FileType javascript autocmd BufWritePre <buffer> silent Autoformat
+
 
 " Handcrafted
 " ===========
