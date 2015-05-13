@@ -19,25 +19,25 @@ set ims=2
 
 " Normal
 " -------
-" if has("gui_macvim")
-"     set guifont=InputMono\ ExLight:h12
-" else 
-"     set guifont=Input\ Mono\ Light\ 10
-" endif
-" colorscheme solarized
+if has("gui_macvim")
+    set guifont=InputMono\ ExLight:h12
+else 
+    set guifont=Input\ Mono\ Light\ 10
+endif
+colorscheme solarized
 " set background=dark
 
 " Writing
 " -------
-if has("gui_macvim")
-    set guifont=CMU\ Typewriter\ Text\ Light:h22
-    set linespace=5
-    let g:goyo_height='100%'
-else
-    set guifont=CMU\ Typewriter\ Text\ Ultra-Light\ 16
-    set linespace=11
-endif
-colorscheme pencil
+" if has("gui_macvim")
+"     set guifont=CMU\ Typewriter\ Text\ Light:h22
+"     set linespace=5
+"     let g:goyo_height='100%'
+" else
+"     set guifont=CMU\ Typewriter\ Text\ Ultra-Light\ 16
+"     set linespace=11
+" endif
+" colorscheme pencil
 
 
 " goyo

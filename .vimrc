@@ -18,6 +18,8 @@ set smarttab
 set expandtab
 " related row number to ease jumping
 set rnu
+" show absolute row number for current line
+set number
 " turn off modeline for security
 set modelines=0
 set showmode
@@ -36,6 +38,8 @@ set autoindent
 " bash-like command menu behavior
 set wildmenu
 set wildmode=list:longest,full
+" change leader to easier pressed one
+let mapleader="\<space>"
 
 " Plugins
 " ==========
@@ -87,6 +91,7 @@ Bundle 'reedes/vim-lexical'
 
 " Tools
 " -----
+Bundle 'Lokaltog/vim-easymotion'
 Bundle 'junegunn/limelight.vim'
 Bundle 'pangloss/vim-javascript'
 Bundle 'derekwyatt/vim-fswitch'
@@ -153,6 +158,11 @@ let g:easytags_suppress_report = 1
 " ----
 au Filetype javascript nnoremap <C-]> :TernDef<CR>
 
+" Autoformat
+" ----------
+" The js indenters are so broken that I have to do this
+au FileType javascript autocmd BufWritePre <buffer> silent Autoformat
+
 " markdown
 " --------
 let g:vim_markdown_initial_foldlevel=1
@@ -178,14 +188,15 @@ augroup pencil
                             \ | call lexical#init()
 augroup END
 
+" EasyMotion
+" ----------
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+map <leader>f <Plug>(easymotion-s)
+
 " fswitch
 " -------
 au BufEnter *.h let b:fswitchdst  = 'cpp,cc,C'
-
-" Autoformat
-" ----------
-" The js indenters are so broken that I have to do this
-au FileType javascript autocmd BufWritePre <buffer> silent Autoformat
 
 
 " Handcrafted
